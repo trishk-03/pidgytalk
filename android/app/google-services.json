@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "383283629229",
+    "project_id": "pidgy-talk",
+    "storage_bucket": "pidgy-talk.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:383283629229:android:6810e1ae4b98209b298a24",
+        "android_client_info": {
+          "package_name": "com.example.pidgy_talk"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcF0aHyXJUC14ZlhtPg_6oCN9bP4c1z_s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
