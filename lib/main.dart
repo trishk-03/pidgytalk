@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:pidgy_talk/landing/screens/landing_screen/landing_screen.dart';
 import 'firebase_options.dart';
 
 
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      home: const LandingScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
