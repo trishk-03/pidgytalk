@@ -40,6 +40,12 @@ dependencies:
   cloud_firestore: ^5.6.9
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.13.1
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/App icon.png"
   flutter_test:
     sdk: flutter
 

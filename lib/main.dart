@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:pidgy_talk/landing/screens/landing_screen/landing_screen.dart';
+import 'package:pidgy_talk/common/utils/colors.dart';
+import 'package:pidgy_talk/features/auth/screens/splash_screen.dart';
 import 'firebase_options.dart';
 
 
@@ -28,32 +29,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Pidgy Talk',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
-      home: const LandingScreen(),
+      theme: ThemeData.dark().copyWith(scaffoldBackgroundColor: backgroundColor),
+      home: const SplashScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pidgy Talk'),
-        centerTitle: true,
-      ),
-      body: const Center(
-        child: Text(
-          'Welcome to Pidgy Talk!',
-          style: TextStyle(fontSize: 20),
-        ),
-      ),
-    );
-  }
-}

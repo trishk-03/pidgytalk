@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pidgy_talk/common/widgets/custom_button.dart';
-
+import 'package:pidgy_talk/features/auth/screens/login_screen.dart';
 
 class LandingScreen extends StatelessWidget {
   const LandingScreen({super.key});
@@ -8,31 +8,67 @@ class LandingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final double verticalPadding = size.height * 0.05;
 
     return Scaffold(
-      body: SafeArea(child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: size.height / 9),
-          const Text("Welcome to Pidgy Talk",style: TextStyle(fontSize: 33,fontWeight: FontWeight.w600),),
+      body: SafeArea(
+        child: SingleChildScrollView( // Helps in small screen sizes
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: verticalPadding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  "Welcome to Pidgy Talk",
+                  style: TextStyle(
+                    fontSize: size.width * 0.08, // Responsive text size
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: size.height * 0.04),
 
-          SizedBox(height: 50),
-          Image.asset("assets/images/PidgyTalk_app-removebg-.png",height: 340,width: 340,),
-          SizedBox(height: size.height / 9),
-          const Padding(
-            padding: EdgeInsets.all(15.0),
-            child: Text(
-              'Read our Privacy Policy. Tap "Agree and continue" to accept the Terms of Service.',
-              style: TextStyle(color: Colors.black),
-              textAlign: TextAlign.center,
+                // Responsive Image
+                SizedBox(
+                  height: size.height * 0.4,
+                  width: size.width * 0.8,
+                  child: Image.asset(
+                    "assets/images/PidgyTalk_app-removebg-.png",
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                SizedBox(height: size.height * 0.04),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Text(
+                    'Read our Privacy Policy. Tap "Agree and continue" to accept the Terms of Service.',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: size.width * 0.04,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SizedBox(height: size.height * 0.1),
+
+                SizedBox(
+                  width: size.width * 0.75,
+                  child: CustomButton(
+                    text: "Agree and Continue",
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const LoginScreen()),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 10),
-
-          SizedBox(width: size.width*0.75,
-              child: CustomButton(text: "Agree and Continue",onPressed: (){},))
-        ],
-      )),
+        ),
+      ),
     );
   }
 }
