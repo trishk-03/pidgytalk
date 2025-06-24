@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:pidgy_talk/common/utils/colors.dart';
 import 'package:pidgy_talk/common/widgets/custom_button.dart';
 import 'package:pidgy_talk/common/widgets/custom_textfield.dart';
-import 'package:pidgy_talk/features/auth/screens/homescreen.dart';
-import 'package:pidgy_talk/features/auth/screens/signup_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignupScreenState extends State<SignupScreen> {
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   @override
   void dispose() {
+    nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Login Screen"),
+        title: const Text("Sign Up"),
         elevation: 0,
         backgroundColor: backgroundColor,
       ),
@@ -44,35 +44,31 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    SizedBox(height: isPortrait ? size.height * 0.08 : 30),
+                    SizedBox(height: isPortrait ? size.height * 0.06 : 30),
                     CustomTextfield(
-                      hintText: 'Enter Your Email Here',
+                      hintText: 'Enter Your Name',
+                      controller: nameController,
+                    ),
+                    const SizedBox(height: 20),
+                    CustomTextfield(
+                      hintText: 'Enter Your Email',
                       controller: emailController,
-                      prefixIcon: Icons.email_outlined,
                     ),
                     const SizedBox(height: 20),
                     CustomTextfield(
                       hintText: 'Enter Your Password',
                       controller: passwordController,
-                      prefixIcon: Icons.password,
                       obscureText: true,
                     ),
-                    const SizedBox(height: 300),
+                    const SizedBox(height: 30),
                     CustomButton(
-                      text: "Login",
+                      text: "Sign Up",
                       onPressed: () {
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Homescreen()));
+                        print("Name: ${nameController.text}");
+                        print("Email: ${emailController.text}");
+                        print("Password: ${passwordController.text}");
                       },
                     ),
-                    SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Text('New user'),
-                      TextButton(onPressed: (){
-                        Navigator.push(context,MaterialPageRoute(builder: (context)=>SignupScreen()
-                        ));
-                      }, child: Text('Sign up'))],
-                    )
                   ],
                 ),
               ),

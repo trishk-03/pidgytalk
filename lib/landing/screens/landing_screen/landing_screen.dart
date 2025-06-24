@@ -57,7 +57,7 @@ class LandingScreen extends StatelessWidget {
                   child: CustomButton(
                     text: "Agree and Continue",
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => const LoginScreen()),
                       );
