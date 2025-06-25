@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pidgy_talk/common/utils/colors.dart';
+import 'package:pidgy_talk/common/widgets/custom_alert_box.dart';
 import 'package:pidgy_talk/common/widgets/custom_button.dart';
 import 'package:pidgy_talk/common/widgets/custom_textfield.dart';
 import 'package:pidgy_talk/features/auth/screens/homescreen.dart';
@@ -16,6 +18,47 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  // Login function
+  Future<void> login(BuildContext context, String email, String password) async {
+    if (email.isEmpty || password.isEmpty) {
+      CustomAlert.showRequiredFieldsAlert(context);
+      return;
+    }
+
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+
+      // Navigate to HomeScreen if login is successful
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Homescreen()),
+      );
+
+      print("Login successful: ${userCredential.user?.email}");
+    } catch (e) {
+      //  Show alert dialog for login error
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          backgroundColor: Colors.red[900],
+          title: const Text('Login Failed', style: TextStyle(color: Colors.white)),
+          content: Text(
+            e.toString(),
+            style: const TextStyle(color: Colors.white70),
+          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK', style: TextStyle(color: Colors.white)),
+            )
+          ],
+        ),
+      );
+    }
+  }
+
   @override
   void dispose() {
     emailController.dispose();
@@ -30,9 +73,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Login Screen"),
-        elevation: 0,
+        title: const Text("Login"),
         backgroundColor: backgroundColor,
+        elevation: 0,
       ),
       body: SafeArea(
         child: Center(
@@ -44,34 +87,38 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    SizedBox(height: isPortrait ? size.height * 0.08 : 30),
+                    SizedBox(height: isPortrait ? size.height * 0.06 : 30),
                     CustomTextfield(
-                      hintText: 'Enter Your Email Here',
+                      hintText: 'Enter Your Email',
                       controller: emailController,
-                      prefixIcon: Icons.email_outlined,
                     ),
                     const SizedBox(height: 20),
                     CustomTextfield(
                       hintText: 'Enter Your Password',
                       controller: passwordController,
-                      prefixIcon: Icons.password,
                       obscureText: true,
                     ),
-                    const SizedBox(height: 300),
+                    const SizedBox(height: 30),
                     CustomButton(
                       text: "Login",
                       onPressed: () {
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Homescreen()));
+                        login(
+                          context,
+                          emailController.text.trim(),
+                          passwordController.text.trim(),
+                        );
                       },
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height:
+                      30),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Text('New user'),
-                      TextButton(onPressed: (){
-                        Navigator.push(context,MaterialPageRoute(builder: (context)=>SignupScreen()
-                        ));
-                      }, child: Text('Sign up'))],
+                      children: [
+                        Text('New User'),
+                        TextButton(onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>SignupScreen()));
+                        }, child: Text('Sign up'))
+                      ],
                     )
                   ],
                 ),

@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pidgy_talk/common/utils/colors.dart';
+import 'package:pidgy_talk/common/widgets/custom_alert_box.dart';
 import 'package:pidgy_talk/common/widgets/custom_button.dart';
 import 'package:pidgy_talk/common/widgets/custom_textfield.dart';
+import 'homescreen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -14,6 +17,50 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  //  Sign up function
+  Future<void> signup(BuildContext context, String email, String password) async {
+    if (email.isEmpty || password.isEmpty) {
+      CustomAlert.showRequiredFieldsAlert(context);
+      return;
+    }
+
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      //  Optional: Update display name
+      if (nameController.text.isNotEmpty) {
+        await userCredential.user?.updateDisplayName(nameController.text);
+      }
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Homescreen()),
+      );
+
+      //  Navigate or show success message
+      print("Signed up: ${userCredential.user?.email}");
+    } catch (e) {
+      print("Signup error: $e");
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          backgroundColor: Colors.red[900],
+          title: const Text('Error', style: TextStyle(color: Colors.white)),
+          content: Text(
+            e.toString(),
+            style: const TextStyle(color: Colors.white70),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK', style: TextStyle(color: Colors.white)),
+            )
+          ],
+        ),
+      );
+    }
+  }
 
   @override
   void dispose() {
@@ -64,9 +111,11 @@ class _SignupScreenState extends State<SignupScreen> {
                     CustomButton(
                       text: "Sign Up",
                       onPressed: () {
-                        print("Name: ${nameController.text}");
-                        print("Email: ${emailController.text}");
-                        print("Password: ${passwordController.text}");
+                        signup(
+                          context,
+                          emailController.text.trim(),
+                          passwordController.text.trim(),
+                        );
                       },
                     ),
                   ],
