@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:pidgy_talk/common/utils/colors.dart';
-import 'package:pidgy_talk/features/auth/screens/splash_screen.dart';
+import 'package:pidgy_talk/views/common/utils/colors.dart';
+import 'package:pidgy_talk/views/screens/splash_screen.dart';
 import 'firebase_options.dart';
 
 

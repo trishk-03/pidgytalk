@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:pidgy_talk/common/utils/colors.dart';
-import 'package:pidgy_talk/common/widgets/custom_alert_box.dart';
-import 'package:pidgy_talk/common/widgets/custom_button.dart';
-import 'package:pidgy_talk/common/widgets/custom_textfield.dart';
+
+import '../common/utils/colors.dart';
+import '../common/widgets/custom_alert_box.dart';
+import '../common/widgets/custom_button.dart';
+import '../common/widgets/custom_textfield.dart';
 import 'homescreen.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -63,6 +64,8 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   @override
+
+  // disposing the controllers
   void dispose() {
     nameController.dispose();
     emailController.dispose();
@@ -78,6 +81,7 @@ class _SignupScreenState extends State<SignupScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Sign Up"),
+        centerTitle: true,
         elevation: 0,
         backgroundColor: backgroundColor,
       ),

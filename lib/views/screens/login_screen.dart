@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:pidgy_talk/common/utils/colors.dart';
-import 'package:pidgy_talk/common/widgets/custom_alert_box.dart';
-import 'package:pidgy_talk/common/widgets/custom_button.dart';
-import 'package:pidgy_talk/common/widgets/custom_textfield.dart';
-import 'package:pidgy_talk/features/auth/screens/homescreen.dart';
-import 'package:pidgy_talk/features/auth/screens/signup_screen.dart';
+import 'package:pidgy_talk/views/screens/homescreen.dart';
+import 'package:pidgy_talk/views/screens/signup_screen.dart';
+import '../common/utils/colors.dart';
+import '../common/widgets/custom_alert_box.dart';
+import '../common/widgets/custom_button.dart';
+import '../common/widgets/custom_textfield.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
