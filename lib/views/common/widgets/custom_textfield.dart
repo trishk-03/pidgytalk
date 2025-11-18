@@ -19,13 +19,13 @@ class CustomTextfield extends StatelessWidget {
     return TextField(
       controller: controller,
       obscureText: obscureText,
-      style: const TextStyle(color: Colors.white),
+      style: const TextStyle(color: Colors.black),
       cursorColor: Colors.greenAccent,
       decoration: InputDecoration(
         filled: true,
-        fillColor: const Color(0xFF1F2C34), // WhatsApp dark chat input BG
+        fillColor: Colors.white,
         hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.grey),
+        hintStyle: const TextStyle(color: Colors.black),
         prefixIcon: prefixIcon != null
             ? Icon(prefixIcon, color: Colors.grey)
             : null,

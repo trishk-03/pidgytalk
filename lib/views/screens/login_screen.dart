@@ -1,8 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:pidgy_talk/views/screens/homescreen.dart';
+import 'package:pidgy_talk/views/screens/complete_profile.dart';
 import 'package:pidgy_talk/views/screens/signup_screen.dart';
-import '../common/utils/colors.dart';
+import '../../models/UserModel.dart';
 import '../common/widgets/custom_alert_box.dart';
 import '../common/widgets/custom_button.dart';
 import '../common/widgets/custom_textfield.dart';
@@ -28,16 +29,18 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+      String uid = userCredential.user!.uid;
 
-      // Navigate to HomeScreen if login is successful
+
+      DocumentSnapshot userData = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      UserModel userModel = UserModel.fromMap(userData.data() as Map<String, dynamic>);
+
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const Homescreen()),
-      );
-
-      print("Login successful: ${userCredential.user?.email}");
+        MaterialPageRoute(builder: (context) => CompleteProfile( userModel: userModel,
+          uid: uid ),
+      ));
     } catch (e) {
-      //  Show alert dialog for login error
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
@@ -69,12 +72,12 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final isPortrait = size.height > size.width;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("Login"),
-        backgroundColor: backgroundColor,
+        centerTitle: true,
+        backgroundColor: Colors.green,
         elevation: 0,
       ),
       body: SafeArea(
@@ -83,22 +86,63 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 500),
+                constraints: const BoxConstraints(maxWidth: 480),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    SizedBox(height: isPortrait ? size.height * 0.06 : 30),
-                    CustomTextfield(
-                      hintText: 'Enter Your Email',
-                      controller: emailController,
+                    SizedBox(height: size.height * 0.03),
+
+                    /// LOGO AVATAR
+                    CircleAvatar(
+                      radius: size.width * 0.18,
+                      backgroundColor: Colors.green.withOpacity(0.15),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Image.asset(
+                          "assets/images/PidgyTalk_app-removebg-.png",
+                          fit: BoxFit.contain,
+                        ),
+                      ),
                     ),
-                    const SizedBox(height: 20),
-                    CustomTextfield(
-                      hintText: 'Enter Your Password',
-                      controller: passwordController,
-                      obscureText: true,
+
+                    SizedBox(height: size.height * 0.05),
+
+                    /// FORM CARD
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            spreadRadius: 2,
+                            offset: const Offset(0, 4),
+                          )
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          CustomTextfield(
+                            hintText: 'Enter Your Email',
+                            controller: emailController,
+                            prefixIcon: Icons.email,
+                          ),
+                          const SizedBox(height: 20),
+                          CustomTextfield(
+                            hintText: 'Enter Your Password',
+                            controller: passwordController,
+                            obscureText: true,
+                            prefixIcon: Icons.lock,
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 30),
+
+                    SizedBox(height: size.height * 0.05),
+
+                    // LOGIN BUTTON
                     CustomButton(
                       text: "Login",
                       onPressed: () {
@@ -109,17 +153,33 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
                       },
                     ),
-                    SizedBox(height:
-                      30),
+
+                    const SizedBox(height: 20),
+
+                    // SIGN UP
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('New User'),
-                        TextButton(onPressed: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>SignupScreen()));
-                        }, child: Text('Sign up'))
+                        const Text(
+                          'New User?',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const SignupScreen()),
+                            );
+                          },
+                          child: const Text(
+                            'Sign up',
+                            style: TextStyle(fontSize: 16, color: Colors.green),
+                          ),
+                        ),
                       ],
-                    )
+                    ),
+
+                    SizedBox(height: size.height * 0.03),
                   ],
                 ),
               ),

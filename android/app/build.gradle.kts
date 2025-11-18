@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.example.pidgy_talk"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -25,7 +25,7 @@ android {
     defaultConfig {
         applicationId = "com.example.pidgy_talk"
         minSdk = 23
-        targetSdk = 33 // or your desired targetSdkVersion as an Int
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
     }
