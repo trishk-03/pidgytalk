@@ -1,10 +1,7 @@
-import 'dart:io';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:image_cropper/image_cropper.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:pidgy_talk/models/UserModel.dart';
 import 'package:pidgy_talk/models/UIHelper.dart';
 import 'package:pidgy_talk/views/common/widgets/custom_button.dart';
@@ -23,65 +20,26 @@ class CompleteProfile extends StatefulWidget {
 
 class _CompleteProfileState extends State<CompleteProfile> {
 
-  File? imageFile;
   final TextEditingController fullname = TextEditingController();
+  User? user = FirebaseAuth.instance.currentUser;
 
-  // PICK IMAGE
-  void selectImage(ImageSource source) async {
-    XFile? pickedFile = await ImagePicker().pickImage(source: source);
-    if (pickedFile != null) cropImage(pickedFile.path);
+
+  late String initialLetter;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Safely extract first letter
+    initialLetter = (widget.userModel.fullname != null &&
+        widget.userModel.fullname!.isNotEmpty)
+        ? widget.userModel.fullname![0].toUpperCase()
+        : "";
   }
 
-  // CROP IMAGE
-  void cropImage(String filePath) async {
-    CroppedFile? croppedImage = await ImageCropper().cropImage(
-      sourcePath: filePath,
-      compressQuality: 20,
-      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-    );
-
-    if (croppedImage != null) {
-      setState(() {
-        imageFile = File(croppedImage.path);
-      });
-    }
-  }
-
-  // SHOW OPTIONS DIALOG
-  void showPhotoOptions() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Upload Profile Picture"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.photo_album),
-                title: const Text("Select from Gallery"),
-                onTap: () {
-                  Navigator.pop(context);
-                  selectImage(ImageSource.gallery);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.camera_alt),
-                title: const Text("Take a Photo"),
-                onTap: () {
-                  Navigator.pop(context);
-                  selectImage(ImageSource.camera);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 
   void checkvalues() {
-    if (fullname.text.trim().isEmpty || imageFile == null) {
+    if (fullname.text.trim().isEmpty) {
       UIHelper.showAlertDialog(context, "Incomplete Data", "All fields required");
     } else {
       uploadData();
@@ -89,31 +47,26 @@ class _CompleteProfileState extends State<CompleteProfile> {
   }
 
   Future<void> uploadData() async {
-    UIHelper.showLoadingDialog(context, "Uploading Image..");
 
     try {
-      UploadTask uploadTask = FirebaseStorage.instance
-          .ref("profilepictures")
-          .child(widget.uid)
-          .putFile(imageFile!);
-
-      TaskSnapshot snapshot = await uploadTask;
-      String downloadUrl = await snapshot.ref.getDownloadURL();
 
       widget.userModel.fullname = fullname.text.trim();
-      widget.userModel.profilepic = downloadUrl;
+      widget.userModel.initialletter = widget.userModel.fullname![0].toUpperCase();
+
 
       await FirebaseFirestore.instance
           .collection("users")
           .doc(widget.uid)
-          .set(widget.userModel.toMap());
+          .set(widget.userModel.toMap(),);
 
       log("Data uploaded successfully");
 
       Navigator.pop(context);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => Homescreen()),
+        MaterialPageRoute(builder: (context) => Homescreen(
+            userModel: widget.userModel, uid: user!.uid,
+        )),
       );
 
     } catch (e) {
@@ -152,16 +105,25 @@ class _CompleteProfileState extends State<CompleteProfile> {
                 SizedBox(height: height * 0.06),
 
                 InkWell(
-                  onTap: showPhotoOptions,
                   child: CircleAvatar(
                     radius: width * 0.18,
-                    backgroundImage:
-                    (imageFile != null) ? FileImage(imageFile!) : null,
-                    child: (imageFile == null)
-                        ? Icon(Icons.person, size: width * 0.18)
-                        : null,
+                    backgroundColor: Colors.green.shade700,
+                    child: Text(
+                      fullname.text.trim().isNotEmpty
+                          ? fullname.text.trim()[0].toUpperCase()
+                          : (widget.userModel.fullname != null &&
+                          widget.userModel.fullname!.isNotEmpty)
+                          ? widget.userModel.fullname![0].toUpperCase()
+                          : "",
+                      style: TextStyle(
+                        fontSize: width * 0.1,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
+
 
                 SizedBox(height: height * 0.06),
 

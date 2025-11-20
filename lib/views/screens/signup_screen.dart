@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pidgy_talk/models/UserModel.dart';
 import 'package:pidgy_talk/views/screens/complete_profile.dart';
+import 'package:pidgy_talk/views/screens/login_screen.dart';
 import '../common/widgets/custom_alert_box.dart';
 import '../common/widgets/custom_button.dart';
 import '../common/widgets/custom_textfield.dart';
@@ -42,7 +43,6 @@ class _SignupScreenState extends State<SignupScreen> {
         uid: uid,
         email: email,
         fullname: nameController.text.trim(),
-        profilepic: "",
       );
 
       // STORE USER IN FIRESTORE
@@ -189,14 +189,24 @@ class _SignupScreenState extends State<SignupScreen> {
                     // ALREADY HAVE ACCOUNT?
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text("Already have an account?"),
-                        SizedBox(width: 4),
-                        Text(
-                          "Login",
-                          style: TextStyle(
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
+                      children: [
+                        const Text("Already have an account?"),
+                        const SizedBox(width: 4),
+                        InkWell(
+                          onTap:() {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LoginScreen(),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            "Login",
+                            style: TextStyle(
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         )
                       ],

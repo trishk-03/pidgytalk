@@ -2,17 +2,17 @@ class UserModel {
   String ? uid;
   String ? fullname;
   String ? email;
-  String ? profilepic;
+  String ? initialletter;
 
   // default constructor
-  UserModel({this.uid, this.fullname, this.email, this.profilepic});
+  UserModel({this.uid, this.fullname, this.email,this.initialletter});
 
   // from map constructor
   UserModel.fromMap(Map<String,dynamic> map) {
     uid = map['uid'];
     fullname = map['fullname'];
     email = map['email'];
-    profilepic = map['profilepic'];
+    initialletter = map['initialletter'];
   }
 
   // to map constructor
@@ -21,7 +21,7 @@ class UserModel {
       'uid': uid,
       'fullname': fullname,
       'email': email,
-      'profilepic': profilepic,
+      'initialletter': initialletter,
     };
   }
 }

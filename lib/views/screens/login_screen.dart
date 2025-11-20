@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pidgy_talk/views/screens/complete_profile.dart';
 import 'package:pidgy_talk/views/screens/signup_screen.dart';
+import '../../models/UIHelper.dart';
 import '../../models/UserModel.dart';
 import '../common/widgets/custom_alert_box.dart';
 import '../common/widgets/custom_button.dart';
@@ -29,38 +30,51 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+
       String uid = userCredential.user!.uid;
 
+      DocumentSnapshot userData = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(uid)
+          .get();
 
-      DocumentSnapshot userData = await FirebaseFirestore.instance.collection('users').doc(uid).get();
-      UserModel userModel = UserModel.fromMap(userData.data() as Map<String, dynamic>);
+      // If user profile DOES NOT exist → Go to CompleteProfile
+      // User exists in Auth but not in Firestore → send to CompleteProfile
 
+      if (!userData.exists || userData.data() == null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CompleteProfile(
+              userModel: UserModel(
+                uid: uid,
+                email: email,
+                fullname: "",
+              ),
+              uid: uid,
+            ),
+          ),
+        );
+        return;
+      }
+
+      // User exists → convert model
+      UserModel userModel =
+      UserModel.fromMap(userData.data() as Map<String, dynamic>);
+
+      // If user already has a profile → go to Home/Chat (not CompleteProfile)
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => CompleteProfile( userModel: userModel,
-          uid: uid ),
-      ));
-    } catch (e) {
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          backgroundColor: Colors.red[900],
-          title: const Text('Login Failed', style: TextStyle(color: Colors.white)),
-          content: Text(
-            e.toString(),
-            style: const TextStyle(color: Colors.white70),
-          ),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK', style: TextStyle(color: Colors.white)),
-            )
-          ],
+        MaterialPageRoute(
+          builder: (_) => CompleteProfile(userModel: userModel, uid: uid),
         ),
       );
+
+    } catch (e) {
+      UIHelper.showAlertDialog(context, "Login Failed", e.toString());
     }
   }
+
 
   @override
   void dispose() {
