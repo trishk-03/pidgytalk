@@ -1,20 +1,24 @@
 class ChatRoomModel {
-  String ? chatroomid;
-  List<String> ? participants;
+  String chatroomid;
+  Map<String, dynamic> participants;
+  String lastMessage;
 
-  // default constructor
-  ChatRoomModel({this.chatroomid, this.participants});
+  ChatRoomModel({
+    required this.chatroomid,
+    required this.participants,
+    required this.lastMessage,
+  });
 
-  // from map constructor
-  ChatRoomModel.fromMap(Map<String, dynamic> map){
-    chatroomid = map['chatroomid'];
-    participants = map['participants'];
-  }
+  ChatRoomModel.fromMap(Map<String, dynamic> map)
+      : chatroomid = map['chatroomid'],
+        participants = Map<String, dynamic>.from(map['participants']),
+        lastMessage = map['lastMessage'];
 
-  Map<String, dynamic> toMap(){
-    return{
+  Map<String, dynamic> toMap() {
+    return {
       'chatroomid': chatroomid,
       'participants': participants,
+      'lastMessage': lastMessage,
     };
-    }
+  }
 }

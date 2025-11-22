@@ -24,7 +24,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.pidgy_talk"
-        minSdk = 23
+        minSdk = flutter.minSdkVersion
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"

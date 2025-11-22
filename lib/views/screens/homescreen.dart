@@ -21,37 +21,40 @@ class _HomescreenState extends State<Homescreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-
-      appBar: AppBar(
-        automaticallyImplyLeading: true,
-        backgroundColor: Colors.green.shade700,
-        elevation: 3,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(20),
-          ),
-        ),
-
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Hey ${widget.userModel.fullname}",
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      // appbar panel
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80),
+        child: AppBar(
+          automaticallyImplyLeading: true,
+          backgroundColor: Colors.green.shade700,
+          elevation: 0,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(20),
             ),
+          ),
+        
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Hey ${widget.userModel.fullname}",
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: CircleAvatar(
+                backgroundColor: Colors.white,
+                radius: 20,
+                child: Icon(Icons.person, color: Colors.green.shade700),
+              ),
+            )
           ],
         ),
-
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: CircleAvatar(
-              backgroundColor: Colors.white,
-              radius: 20,
-              child: Icon(Icons.person, color: Colors.green.shade700),
-            ),
-          )
-        ],
       ),
 
       body: Center(
@@ -61,7 +64,7 @@ class _HomescreenState extends State<Homescreen> {
         ),
       ),
 
-      // Floating Action Button for Search
+      // Search button that will navigate to the search screen
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green,
         elevation: 4,
@@ -69,7 +72,9 @@ class _HomescreenState extends State<Homescreen> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) =>  SearchScreen()),
+            MaterialPageRoute(builder: (context) =>  SearchScreen(
+              userModel: widget.userModel, uid: widget.uid,
+            )),
           );
         },
         child: const Icon(Icons.search, size: 28),
